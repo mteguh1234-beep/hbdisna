@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Isna</title>
+
+<style>
+
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:#0b0f1a;
+color:white;
+overflow-x:hidden;
+}
+
+.center{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+height:100vh;
+text-align:center;
+padding:20px;
+}
+
+.section{
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:40px;
+}
+
+button{
+padding:14px 28px;
+border:none;
+border-radius:30px;
+background:#ff4b6e;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+.nextBtn{
+margin-top:40px;
+background:#ff7a8f;
+display:none;
+}
+
+.typing{
+font-size:22px;
+max-width:650px;
+line-height:1.7;
+}
+
+.gallery img{
+width:230px;
+border-radius:20px;
+margin:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+.chat{
+background:#1e2a38;
+padding:15px 20px;
+border-radius:15px;
+margin:10px;
+max-width:500px;
+}
+
+.star{
+position:fixed;
+width:2px;
+height:2px;
+background:white;
+animation:twinkle 3s infinite;
+}
+
+@keyframes twinkle{
+0%{opacity:0.2}
+50%{opacity:1}
+100%{opacity:0.2}
+}
+
+.cake{
+font-size:90px;
+margin:20px;
+}
+
+.confetti{
+position:fixed;
+width:10px;
+height:10px;
+top:-10px;
+animation:fall linear infinite;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(360deg);
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<audio id="musik" loop>
+<source src="Chintya Gabriella Panjang Umur.mp3" type="audio/mpeg">
+</audio>
+
+<div class="center" id="intro">
+
+<h1>Hai Isna</h1>
+<p>Ada sesuatu yang ingin aku sampaikan hari ini.</p>
+
+<button onclick="mulai()">Buka</button>
+
+</div>
+
+
+<div id="content" style="display:none">
+
+<div class="section">
+
+<p class="typing" id="text1"></p>
+
+<button class="nextBtn" onclick="nextSection(this)">Lanjut ↓</button>
+
+</div>
+
+
+<div class="section">
+
+<div class="chat">Aku masih ingat waktu pertama kita sering chat.</div>
+<div class="chat">Obrolan sederhana… tapi entah kenapa selalu terasa menyenangkan.</div>
+
+<button class="nextBtn" onclick="nextSection(this)" style="display:block">
+Lanjut ↓
+</button>
+
+</div>
+
+
+<div class="section">
+
+<h2>Beberapa Senyummu</h2>
+
+<div class="gallery">
+<img src="foto1.png">
+<img src="foto2.png">
+<img src="foto3.png">
+<img src="foto4.png">
+</div>
+
+<button class="nextBtn" onclick="nextSection(this)" style="display:block">
+Lanjut ↓
+</button>
+
+</div>
+
+
+<div class="section">
+
+<p class="typing" id="text2"></p>
+
+<button class="nextBtn" onclick="nextSection(this)">Lanjut ↓</button>
+
+</div>
+
+
+<div class="section">
+
+<h2>Untuk Bapakmu</h2>
+
+<img src="ayah.png" style="width:260px;border-radius:20px">
+
+<p class="typing" id="text3"></p>
+
+<button class="nextBtn" onclick="nextSection(this)">Lanjut ↓</button>
+
+</div>
+
+
+<div class="section">
+
+<h2>Kalian</h2>
+
+<img src="isna_ayah.png" style="width:260px;border-radius:20px">
+
+<p class="typing" id="text5"></p>
+
+<button class="nextBtn" onclick="nextSection(this)">Lanjut ↓</button>
+
+</div>
+
+
+<div class="section">
+
+<h1>🎂Selamat Ulang Tahun ke 23 Isna🎂</h1>
+
+<img src="ayah_cake.png" style="width:260px;border-radius:20px">
+
+<p class="typing" id="text4"></p>
+
+<button class="nextBtn" onclick="nextSection(this)">Selesai</button>
+
+
+
+</div>
+
+
+<script>
+
+function mulai(){
+
+document.getElementById("intro").style.display="none"
+document.getElementById("content").style.display="block"
+
+document.getElementById("musik").play()
+
+typing("text1",
+"Hari ini bukan cuma tentang ulang tahunmu. Tapi tentang semua perjalanan yang sudah kamu lewati.")
+
+typing("text2",
+"Aku tahu ada masa dimana kamu sangat merindukan seseorang yang sangat penting di hidupmu.")
+
+typing("text3",
+"Mungkin sekarang beliau tidak ada di sini. Tapi aku yakin beliau selalu melihatmu dari tempat yang indah. Dan selalu bangga dengan anaknya.")
+
+typing("text4",
+"Semoga hidupmu pelan-pelan menjadi lebih ringan. Semoga semua kesedihan diganti dengan kebahagiaan. Terima kasih sudah pernah hadir di hidupku.")
+
+typing("text5",
+"Kenangan tidak pernah benar-benar hilang. Ia hanya berubah menjadi sesuatu yang selalu hidup di hati.")
+
+}
+
+function typing(id,text){
+
+let i=0
+let speed=40
+let el=document.getElementById(id)
+
+function ketik(){
+
+if(i<text.length){
+
+el.innerHTML+=text.charAt(i)
+i++
+
+setTimeout(ketik,speed)
+
+}else{
+
+let btn=el.parentElement.querySelector(".nextBtn")
+if(btn) btn.style.display="block"
+
+}
+
+}
+
+ketik()
+
+}
+
+function nextSection(btn){
+
+let section=btn.parentElement
+let next=section.nextElementSibling
+
+if(next){
+
+next.scrollIntoView({behavior:"smooth"})
+
+}
+
+}
+
+function stars(){
+
+for(let i=0;i<120;i++){
+
+let star=document.createElement("div")
+
+star.className="star"
+
+star.style.left=Math.random()*100+"%"
+star.style.top=Math.random()*100+"%"
+
+star.style.animationDelay=Math.random()*5+"s"
+
+document.body.appendChild(star)
+
+}
+
+}
+
+function confetti(){
+
+for(let i=0;i<80;i++){
+
+let conf=document.createElement("div")
+
+conf.className="confetti"
+
+conf.style.left=Math.random()*100+"%"
+
+conf.style.background=
+"hsl("+Math.random()*360+",100%,50%)"
+
+conf.style.animationDuration=
+(3+Math.random()*5)+"s"
+
+document.body.appendChild(conf)
+
+}
+
+}
+
+stars()
+confetti()
+
+</script>
+
+</body>
+</html>
