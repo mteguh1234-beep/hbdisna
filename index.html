@@ -86,10 +86,7 @@ animation:twinkle 3s infinite;
 100%{opacity:0.2}
 }
 
-.cake{
-font-size:90px;
-margin:20px;
-}
+/* CONFETTI */
 
 .confetti{
 position:fixed;
@@ -105,13 +102,72 @@ transform:translateY(110vh) rotate(360deg);
 }
 }
 
+/* BALON */
+
+.balloon{
+position:fixed;
+width:35px;
+height:45px;
+border-radius:50%;
+animation:float 6s ease-in-out infinite;
+z-index:5;
+}
+
+.balloon::after{
+content:"";
+position:absolute;
+width:2px;
+height:40px;
+background:white;
+left:50%;
+top:45px;
+}
+
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-30px)}
+100%{transform:translateY(0)}
+}
+
+/* POPUP */
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.popupContent{
+background:#1e2a38;
+padding:30px;
+border-radius:15px;
+text-align:center;
+width:90%;
+max-width:400px;
+}
+
+textarea{
+width:100%;
+height:100px;
+margin-top:15px;
+border-radius:10px;
+border:none;
+padding:10px;
+}
+
 </style>
 </head>
 
 <body>
 
 <audio id="musik" loop>
-<source src="Chintya Gabriella Panjang Umur.mp3" type="audio/mpeg">
+<source src="Chintya Gabriella Panjang Umur.mp3">
 </audio>
 
 <div class="center" id="intro">
@@ -127,11 +183,8 @@ transform:translateY(110vh) rotate(360deg);
 <div id="content" style="display:none">
 
 <div class="section">
-
 <p class="typing" id="text1"></p>
-
 <button class="nextBtn" onclick="nextSection(this)">Lanjut ↓</button>
-
 </div>
 
 
@@ -208,14 +261,50 @@ Lanjut ↓
 
 <p class="typing" id="text4"></p>
 
-<button class="nextBtn" onclick="nextSection(this)">Selesai</button>
+<button class="nextBtn" onclick="showPopup()">Selesai</button>
+
+</div>
+
+</div>
 
 
+<div class="popup" id="popup">
+
+<div class="popupContent">
+
+<h3>Mau ngucapin sesuatu ke aku?</h3>
+
+<div id="pilihan">
+<button onclick="showInput()">Iya</button>
+<button onclick="closePopup()">Tidak</button>
+</div>
+
+<div id="inputPesan" style="display:none">
+
+<textarea id="pesan"></textarea>
+<br><br>
+
+<button onclick="kirimWA()">Kirim</button>
+
+</div>
+
+</div>
 
 </div>
 
 
 <script>
+
+const texts={
+text1:"Hari ini bukan cuma tentang ulang tahunmu. Tapi tentang semua perjalanan yang sudah kamu lewati.",
+text2:"Aku tahu ada masa dimana kamu sangat merindukan seseorang yang sangat penting di hidupmu.",
+text3:"Mungkin sekarang beliau tidak ada di sini. Tapi aku yakin beliau selalu melihatmu dari tempat yang indah. Dan selalu bangga dengan anaknya.",
+text4:"Semoga hidupmu pelan-pelan menjadi lebih ringan. Semoga semua kesedihan diganti dengan kebahagiaan. Terima kasih sudah pernah hadir di hidupku.",
+text5:"Kenangan tidak pernah benar-benar hilang. Ia hanya berubah menjadi sesuatu yang selalu hidup di hati."
+}
+
+let typed={}
+let balloonShown=false
 
 function mulai(){
 
@@ -224,27 +313,55 @@ document.getElementById("content").style.display="block"
 
 document.getElementById("musik").play()
 
-typing("text1",
-"Hari ini bukan cuma tentang ulang tahunmu. Tapi tentang semua perjalanan yang sudah kamu lewati.")
+observeSections()
 
-typing("text2",
-"Aku tahu ada masa dimana kamu sangat merindukan seseorang yang sangat penting di hidupmu.")
+}
 
-typing("text3",
-"Mungkin sekarang beliau tidak ada di sini. Tapi aku yakin beliau selalu melihatmu dari tempat yang indah. Dan selalu bangga dengan anaknya.")
+function observeSections(){
 
-typing("text4",
-"Semoga hidupmu pelan-pelan menjadi lebih ringan. Semoga semua kesedihan diganti dengan kebahagiaan. Terima kasih sudah pernah hadir di hidupku.")
+const observer=new IntersectionObserver((entries)=>{
 
-typing("text5",
-"Kenangan tidak pernah benar-benar hilang. Ia hanya berubah menjadi sesuatu yang selalu hidup di hati.")
+entries.forEach(entry=>{
+
+if(entry.isIntersecting){
+
+let el=entry.target.querySelector(".typing")
+
+if(el && !typed[el.id]){
+
+typing(el.id,texts[el.id])
+
+typed[el.id]=true
+
+if(el.id==="text1" && !balloonShown){
+
+buatBalon()
+
+balloonShown=true
+
+}
+
+if(el.id==="text4"){
+confetti()
+}
+
+}
+
+}
+
+})
+
+},{threshold:0.6})
+
+document.querySelectorAll(".section").forEach(sec=>{
+observer.observe(sec)
+})
 
 }
 
 function typing(id,text){
 
 let i=0
-let speed=40
 let el=document.getElementById(id)
 
 function ketik(){
@@ -252,13 +369,15 @@ function ketik(){
 if(i<text.length){
 
 el.innerHTML+=text.charAt(i)
+
 i++
 
-setTimeout(ketik,speed)
+setTimeout(ketik,40)
 
 }else{
 
 let btn=el.parentElement.querySelector(".nextBtn")
+
 if(btn) btn.style.display="block"
 
 }
@@ -271,14 +390,71 @@ ketik()
 
 function nextSection(btn){
 
-let section=btn.parentElement
-let next=section.nextElementSibling
+let next=btn.parentElement.nextElementSibling
 
 if(next){
-
 next.scrollIntoView({behavior:"smooth"})
+}
 
 }
+
+function buatBalon(){
+
+for(let i=0;i<6;i++){
+
+let b=document.createElement("div")
+
+b.className="balloon"
+
+b.style.left="15px"
+b.style.top=(120+i*110)+"px"
+b.style.background=`hsl(${Math.random()*360},80%,60%)`
+
+document.body.appendChild(b)
+
+}
+
+for(let i=0;i<6;i++){
+
+let b=document.createElement("div")
+
+b.className="balloon"
+
+b.style.right="15px"
+b.style.top=(120+i*110)+"px"
+b.style.background=`hsl(${Math.random()*360},80%,60%)`
+
+document.body.appendChild(b)
+
+}
+
+}
+
+function showPopup(){
+document.getElementById("popup").style.display="flex"
+}
+
+function closePopup(){
+document.getElementById("popup").style.display="none"
+}
+
+function showInput(){
+
+document.getElementById("pilihan").style.display="none"
+
+document.getElementById("inputPesan").style.display="block"
+
+}
+
+function kirimWA(){
+
+let pesan=document.getElementById("pesan").value
+
+let nomor="6282324027386"
+
+let url=`https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`
+
+window.open(url)
 
 }
 
@@ -292,7 +468,6 @@ star.className="star"
 
 star.style.left=Math.random()*100+"%"
 star.style.top=Math.random()*100+"%"
-
 star.style.animationDelay=Math.random()*5+"s"
 
 document.body.appendChild(star)
@@ -303,19 +478,15 @@ document.body.appendChild(star)
 
 function confetti(){
 
-for(let i=0;i<80;i++){
+for(let i=0;i<120;i++){
 
 let conf=document.createElement("div")
 
 conf.className="confetti"
 
 conf.style.left=Math.random()*100+"%"
-
-conf.style.background=
-"hsl("+Math.random()*360+",100%,50%)"
-
-conf.style.animationDuration=
-(3+Math.random()*5)+"s"
+conf.style.background="hsl("+Math.random()*360+",100%,50%)"
+conf.style.animationDuration=(3+Math.random()*5)+"s"
 
 document.body.appendChild(conf)
 
@@ -324,7 +495,6 @@ document.body.appendChild(conf)
 }
 
 stars()
-confetti()
 
 </script>
 
