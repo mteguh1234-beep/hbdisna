@@ -10,10 +10,23 @@
 body{
 margin:0;
 font-family:'Segoe UI',sans-serif;
-background:#0b0f1a;
+background:#050814;
 color:white;
 overflow-x:hidden;
 }
+
+/* CANVAS BACKGROUND */
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
+/* INTRO */
 
 .center{
 display:flex;
@@ -25,15 +38,19 @@ text-align:center;
 padding:20px;
 }
 
+/* SECTION */
+
 .section{
 min-height:100vh;
 display:flex;
 flex-direction:column;
-justify-content:center;
+justify-content:flex-start;
 align-items:center;
 text-align:center;
-padding:40px;
+padding:90px 40px;
 }
+
+/* BUTTON */
 
 button{
 padding:14px 28px;
@@ -51,11 +68,15 @@ background:#ff7a8f;
 display:none;
 }
 
+/* TEXT */
+
 .typing{
 font-size:22px;
 max-width:650px;
 line-height:1.7;
 }
+
+/* GALLERY */
 
 .gallery img{
 width:230px;
@@ -72,20 +93,6 @@ margin:10px;
 max-width:500px;
 }
 
-.star{
-position:fixed;
-width:2px;
-height:2px;
-background:white;
-animation:twinkle 3s infinite;
-}
-
-@keyframes twinkle{
-0%{opacity:0.2}
-50%{opacity:1}
-100%{opacity:0.2}
-}
-
 /* CONFETTI */
 
 .confetti{
@@ -100,33 +107,6 @@ animation:fall linear infinite;
 to{
 transform:translateY(110vh) rotate(360deg);
 }
-}
-
-/* BALON */
-
-.balloon{
-position:fixed;
-width:35px;
-height:45px;
-border-radius:50%;
-animation:float 6s ease-in-out infinite;
-z-index:5;
-}
-
-.balloon::after{
-content:"";
-position:absolute;
-width:2px;
-height:40px;
-background:white;
-left:50%;
-top:45px;
-}
-
-@keyframes float{
-0%{transform:translateY(0)}
-50%{transform:translateY(-30px)}
-100%{transform:translateY(0)}
 }
 
 /* POPUP */
@@ -161,10 +141,22 @@ border:none;
 padding:10px;
 }
 
+/* BUTTON AREA */
+
+.popupButtons{
+margin-top:15px;
+display:flex;
+gap:10px;
+justify-content:center;
+}
+
 </style>
 </head>
 
 <body>
+
+<canvas id="sky"></canvas>
+<canvas id="fireworks"></canvas>
 
 <audio id="musik" loop>
 <source src="Chintya Gabriella Panjang Umur.mp3">
@@ -272,7 +264,7 @@ Lanjut ↓
 
 <div class="popupContent">
 
-<h3>Mau ngucapin sesuatu ke aku?</h3>
+<h3>Ada yang mau disampaikan ke aku gk nih?</h3>
 
 <div id="pilihan">
 <button onclick="showInput()">Iya</button>
@@ -282,9 +274,11 @@ Lanjut ↓
 <div id="inputPesan" style="display:none">
 
 <textarea id="pesan"></textarea>
-<br><br>
 
+<div class="popupButtons">
 <button onclick="kirimWA()">Kirim</button>
+<button onclick="batalPesan()">Batal</button>
+</div>
 
 </div>
 
@@ -295,6 +289,8 @@ Lanjut ↓
 
 <script>
 
+/* TEXT */
+
 const texts={
 text1:"Hari ini bukan cuma tentang ulang tahunmu. Tapi tentang semua perjalanan yang sudah kamu lewati.",
 text2:"Aku tahu ada masa dimana kamu sangat merindukan seseorang yang sangat penting di hidupmu.",
@@ -304,7 +300,7 @@ text5:"Kenangan tidak pernah benar-benar hilang. Ia hanya berubah menjadi sesuat
 }
 
 let typed={}
-let balloonShown=false
+let fireworksStarted=false
 
 function mulai(){
 
@@ -316,6 +312,8 @@ document.getElementById("musik").play()
 observeSections()
 
 }
+
+/* OBSERVER */
 
 function observeSections(){
 
@@ -330,15 +328,11 @@ let el=entry.target.querySelector(".typing")
 if(el && !typed[el.id]){
 
 typing(el.id,texts[el.id])
-
 typed[el.id]=true
 
-if(el.id==="text1" && !balloonShown){
-
-buatBalon()
-
-balloonShown=true
-
+if(el.id==="text1" && !fireworksStarted){
+startFireworks()
+fireworksStarted=true
 }
 
 if(el.id==="text4"){
@@ -359,6 +353,8 @@ observer.observe(sec)
 
 }
 
+/* TYPING */
+
 function typing(id,text){
 
 let i=0
@@ -367,19 +363,12 @@ let el=document.getElementById(id)
 function ketik(){
 
 if(i<text.length){
-
 el.innerHTML+=text.charAt(i)
-
 i++
-
 setTimeout(ketik,40)
-
 }else{
-
 let btn=el.parentElement.querySelector(".nextBtn")
-
 if(btn) btn.style.display="block"
-
 }
 
 }
@@ -388,47 +377,22 @@ ketik()
 
 }
 
+/* SCROLL */
+
 function nextSection(btn){
 
 let next=btn.parentElement.nextElementSibling
 
 if(next){
-next.scrollIntoView({behavior:"smooth"})
+window.scrollTo({
+top:next.offsetTop,
+behavior:"smooth"
+})
 }
 
 }
 
-function buatBalon(){
-
-for(let i=0;i<6;i++){
-
-let b=document.createElement("div")
-
-b.className="balloon"
-
-b.style.left="15px"
-b.style.top=(120+i*110)+"px"
-b.style.background=`hsl(${Math.random()*360},80%,60%)`
-
-document.body.appendChild(b)
-
-}
-
-for(let i=0;i<6;i++){
-
-let b=document.createElement("div")
-
-b.className="balloon"
-
-b.style.right="15px"
-b.style.top=(120+i*110)+"px"
-b.style.background=`hsl(${Math.random()*360},80%,60%)`
-
-document.body.appendChild(b)
-
-}
-
-}
+/* POPUP */
 
 function showPopup(){
 document.getElementById("popup").style.display="flex"
@@ -439,42 +403,30 @@ document.getElementById("popup").style.display="none"
 }
 
 function showInput(){
-
 document.getElementById("pilihan").style.display="none"
-
 document.getElementById("inputPesan").style.display="block"
+}
+
+function batalPesan(){
+
+document.getElementById("inputPesan").style.display="none"
+document.getElementById("pilihan").style.display="block"
 
 }
+
+/* WA */
 
 function kirimWA(){
 
 let pesan=document.getElementById("pesan").value
-
 let nomor="6282324027386"
 
 let url=`https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`
-
 window.open(url)
 
 }
 
-function stars(){
-
-for(let i=0;i<120;i++){
-
-let star=document.createElement("div")
-
-star.className="star"
-
-star.style.left=Math.random()*100+"%"
-star.style.top=Math.random()*100+"%"
-star.style.animationDelay=Math.random()*5+"s"
-
-document.body.appendChild(star)
-
-}
-
-}
+/* CONFETTI */
 
 function confetti(){
 
@@ -483,7 +435,6 @@ for(let i=0;i<120;i++){
 let conf=document.createElement("div")
 
 conf.className="confetti"
-
 conf.style.left=Math.random()*100+"%"
 conf.style.background="hsl("+Math.random()*360+",100%,50%)"
 conf.style.animationDuration=(3+Math.random()*5)+"s"
@@ -494,7 +445,129 @@ document.body.appendChild(conf)
 
 }
 
-stars()
+/* SKY STARS */
+
+const sky=document.getElementById("sky")
+const sctx=sky.getContext("2d")
+
+sky.width=window.innerWidth
+sky.height=window.innerHeight
+
+let stars=[]
+
+for(let i=0;i<200;i++){
+stars.push({
+x:Math.random()*sky.width,
+y:Math.random()*sky.height,
+r:Math.random()*1.5
+})
+}
+
+function drawStars(){
+
+sctx.clearRect(0,0,sky.width,sky.height)
+
+stars.forEach(star=>{
+sctx.fillStyle="white"
+sctx.beginPath()
+sctx.arc(star.x,star.y,star.r,0,Math.PI*2)
+sctx.fill()
+})
+
+requestAnimationFrame(drawStars)
+
+}
+
+drawStars()
+
+/* SHOOTING STAR */
+
+setInterval(()=>{
+
+let x=Math.random()*sky.width
+let y=Math.random()*sky.height/2
+
+let len=300
+
+let grad=sctx.createLinearGradient(x,y,x+len,y+len)
+
+grad.addColorStop(0,"white")
+grad.addColorStop(1,"transparent")
+
+sctx.strokeStyle=grad
+sctx.lineWidth=2
+
+sctx.beginPath()
+sctx.moveTo(x,y)
+sctx.lineTo(x+len,y+len)
+sctx.stroke()
+
+},5000)
+
+/* FIREWORKS */
+
+function startFireworks(){
+
+const canvas=document.getElementById("fireworks")
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+let particles=[]
+
+function firework(){
+
+let x=Math.random()*canvas.width
+let y=Math.random()*canvas.height*0.5
+
+for(let i=0;i<70;i++){
+
+particles.push({
+x:x,
+y:y,
+vx:(Math.random()-0.5)*6,
+vy:(Math.random()-0.5)*6,
+life:100,
+color:`hsl(${Math.random()*360},100%,60%)`
+})
+
+}
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+particles.forEach((p,i)=>{
+
+p.x+=p.vx
+p.y+=p.vy
+p.life--
+
+ctx.fillStyle=p.color
+ctx.fillRect(p.x,p.y,3,3)
+
+if(p.life<=0){
+particles.splice(i,1)
+}
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+setInterval(()=>{
+firework()
+firework()
+firework()
+},1200)
+
+animate()
+
+}
 
 </script>
 
