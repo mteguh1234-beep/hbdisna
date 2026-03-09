@@ -15,7 +15,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* CANVAS BACKGROUND */
+/* CANVAS */
 
 canvas{
 position:fixed;
@@ -23,7 +23,25 @@ top:0;
 left:0;
 width:100%;
 height:100%;
+z-index:-2;
+}
+
+/* BINTANG */
+
+.star{
+position:fixed;
+width:2px;
+height:2px;
+background:white;
+border-radius:50%;
+animation:twinkle 3s infinite;
 z-index:-1;
+}
+
+@keyframes twinkle{
+0%{opacity:0.2}
+50%{opacity:1}
+100%{opacity:0.2}
 }
 
 /* INTRO */
@@ -76,14 +94,7 @@ max-width:650px;
 line-height:1.7;
 }
 
-/* GALLERY */
-
-.gallery img{
-width:230px;
-border-radius:20px;
-margin:10px;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
-}
+/* CHAT */
 
 .chat{
 background:#1e2a38;
@@ -91,6 +102,15 @@ padding:15px 20px;
 border-radius:15px;
 margin:10px;
 max-width:500px;
+}
+
+/* GALLERY */
+
+.gallery img{
+width:230px;
+border-radius:20px;
+margin:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
 /* CONFETTI */
@@ -141,8 +161,6 @@ border:none;
 padding:10px;
 }
 
-/* BUTTON AREA */
-
 .popupButtons{
 margin-top:15px;
 display:flex;
@@ -155,7 +173,6 @@ justify-content:center;
 
 <body>
 
-<canvas id="sky"></canvas>
 <canvas id="fireworks"></canvas>
 
 <audio id="musik" loop>
@@ -264,7 +281,7 @@ Lanjut ↓
 
 <div class="popupContent">
 
-<h3>Ada yang mau disampaikan ke aku gk nih?</h3>
+<h3>Mau ngucapin sesuatu ke aku?</h3>
 
 <div id="pilihan">
 <button onclick="showInput()">Iya</button>
@@ -288,8 +305,6 @@ Lanjut ↓
 
 
 <script>
-
-/* TEXT */
 
 const texts={
 text1:"Hari ini bukan cuma tentang ulang tahunmu. Tapi tentang semua perjalanan yang sudah kamu lewati.",
@@ -408,13 +423,11 @@ document.getElementById("inputPesan").style.display="block"
 }
 
 function batalPesan(){
-
 document.getElementById("inputPesan").style.display="none"
 document.getElementById("pilihan").style.display="block"
-
 }
 
-/* WA */
+/* WHATSAPP */
 
 function kirimWA(){
 
@@ -426,6 +439,28 @@ window.open(url)
 
 }
 
+/* BINTANG */
+
+function stars(){
+
+for(let i=0;i<150;i++){
+
+let star=document.createElement("div")
+
+star.className="star"
+
+star.style.left=Math.random()*100+"%"
+star.style.top=Math.random()*100+"%"
+star.style.animationDelay=Math.random()*5+"s"
+
+document.body.appendChild(star)
+
+}
+
+}
+
+stars()
+
 /* CONFETTI */
 
 function confetti(){
@@ -435,6 +470,7 @@ for(let i=0;i<120;i++){
 let conf=document.createElement("div")
 
 conf.className="confetti"
+
 conf.style.left=Math.random()*100+"%"
 conf.style.background="hsl("+Math.random()*360+",100%,50%)"
 conf.style.animationDuration=(3+Math.random()*5)+"s"
@@ -444,65 +480,6 @@ document.body.appendChild(conf)
 }
 
 }
-
-/* SKY STARS */
-
-const sky=document.getElementById("sky")
-const sctx=sky.getContext("2d")
-
-sky.width=window.innerWidth
-sky.height=window.innerHeight
-
-let stars=[]
-
-for(let i=0;i<200;i++){
-stars.push({
-x:Math.random()*sky.width,
-y:Math.random()*sky.height,
-r:Math.random()*1.5
-})
-}
-
-function drawStars(){
-
-sctx.clearRect(0,0,sky.width,sky.height)
-
-stars.forEach(star=>{
-sctx.fillStyle="white"
-sctx.beginPath()
-sctx.arc(star.x,star.y,star.r,0,Math.PI*2)
-sctx.fill()
-})
-
-requestAnimationFrame(drawStars)
-
-}
-
-drawStars()
-
-/* SHOOTING STAR */
-
-setInterval(()=>{
-
-let x=Math.random()*sky.width
-let y=Math.random()*sky.height/2
-
-let len=300
-
-let grad=sctx.createLinearGradient(x,y,x+len,y+len)
-
-grad.addColorStop(0,"white")
-grad.addColorStop(1,"transparent")
-
-sctx.strokeStyle=grad
-sctx.lineWidth=2
-
-sctx.beginPath()
-sctx.moveTo(x,y)
-sctx.lineTo(x+len,y+len)
-sctx.stroke()
-
-},5000)
 
 /* FIREWORKS */
 
